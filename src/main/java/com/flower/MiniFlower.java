@@ -36,7 +36,7 @@ public class MiniFlower {
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println("Использование:");
-            System.out.println("  java -jar mnflw1.jar <путь_к_файлу.class или .jar>");
+            System.out.println("  java -jar mnflw.jar <путь_к_файлу.class или .jar>");
             return;
         }
 
@@ -62,7 +62,6 @@ public class MiniFlower {
         }
     }
 
-    // Декомпиляция одиночного .class файла в .java файл рядом
     private static void processClassFile(File file) {
         String outPath = file.getAbsolutePath().replaceAll("\\.class$", ".java");
         File outFile = new File(outPath);
@@ -79,9 +78,7 @@ public class MiniFlower {
         }
     }
 
-    // Декомпиляция всех классов внутри .jar архива с созданием папок
     private static void processJarFile(File file) {
-        // Создаем корневую папку для результатов декомпиляции
         String outputDirName = file.getName().replaceAll("\\.jar$", "") + "_decompiled";
         File outputDir = new File(file.getParent(), outputDirName);
 
@@ -93,11 +90,9 @@ public class MiniFlower {
                 JarEntry entry = entries.nextElement();
 
                 if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
-                    // Формируем путь к будущему .java файлу с сохранением структуры пакетов
                     String javaRelativePath = entry.getName().replaceAll("\\.class$", ".java");
                     File javaFile = new File(outputDir, javaRelativePath);
 
-                    // Создаем необходимые подпапки (пакеты)
                     File parentDir = javaFile.getParentFile();
                     if (parentDir != null && !parentDir.exists()) {
                         parentDir.mkdirs();
@@ -122,15 +117,13 @@ public class MiniFlower {
         writer.println("// ----------------------------------------------------");
     }
 
-    // Передаем PrintWriter в ClassReader, чтобы писать в файл, а не в консоль
     private static void decompileStream(InputStream is, PrintWriter writer) throws IOException {
         ClassReader reader = new ClassReader(is);
         reader.accept(new DecompilerClassVisitor(writer), 0);
     }
 
-    // Графическая пасхалка на Swing (осталась без изменений)
     private static void showEasterEgg() {
-        System.out.println("✨ Запуск секретного графического модуля...");
+        System.out.println("Запуск секретного графического модуля...");
 
         JFrame frame = new JFrame("Miniflower Secret Easter Egg");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -192,7 +185,6 @@ public class MiniFlower {
         timer.start();
     }
 
-    // --- Измененные посетители ASM для поддержки PrintWriter ---
     static class DecompilerClassVisitor extends ClassVisitor {
 
         private String className;
